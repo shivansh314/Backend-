@@ -1,3 +1,5 @@
+//File uploading utility 
+
 import {v2 as cloudinary} from "cloudinary"
 import fs from "fs"
 
@@ -31,3 +33,5 @@ const uploadonCloudinary = async(localfilepath) => {
     }
 }
 
+
+export {uploadonCloudinary}
