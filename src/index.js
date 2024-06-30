@@ -1,26 +1,28 @@
-// require('dotenv').config({path : './env'})
+//  for - connecting to DB and starting the application 
+
 import dotenv from "dotenv"
 import connectDB from "./db/index.js";
-import express from "express"
-const app = express()
+import {app} from './app.js'
 
+// dotenv for security reasons to protect the environment variable 
 dotenv.config({
-    path : './env'
+    path: './.env'
 })
+
+
+// connecting to the database  , connectDB() is a async function that returns a promise object 
 
 connectDB()
-.then(()=>{
-    app.on("error"  , (error) => {
-        console.log("ERROR: " , error);
-        throw error
-    })
-    app.listen(process.env.PORT || 80000 , () => {
-        console.log(`server is running at port :${process.env.PORT} `);
+.then(() => {                      
+    // if connection is succesfull -> start the app at port process.env.PORT or 8000
+    app.listen(process.env.PORT || 8000, () => {
+        console.log(`⚙️ Server is running at port : ${process.env.PORT}`);
     })
 })
-.catch((error)=>{
-    console.log("Mongodb connection failed" , error);
+.catch((err) => {
+    console.log("MONGO db connection failed !!! ", err);
 })
+
 
 
 
