@@ -2,7 +2,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../utils/Cloudinary.js";
+import {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+} from "../utils/Cloudinary.js";
 import jwt from "jsonwebtoken";
 
 const generateAccessAndRefereshTokens = async (userId) => {
@@ -320,6 +323,15 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   }
 
   //TODO: delete old image - assignment
+  const avatarUrl = req.user.avatar;
+
+  // extracting public id from thr avatar url
+  const oldAvatarUrl = avatarUrl.split("/");
+  const oldAvatarId = oldAvatarUrl[oldAvatarUrl.length - 1].split(".")[0];
+  console.log(oldAvatarUrl[oldAvatarUrl.length - 1].split(".")[0]);
+
+  // deleting from the cloudinary
+  await deleteFromCloudinary(oldAvatarUrl);
 
   const avatar = await uploadOnCloudinary(avatarLocalPath);
 
