@@ -331,7 +331,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   console.log(oldAvatarUrl[oldAvatarUrl.length - 1].split(".")[0]);
 
   // deleting from the cloudinary
-  await deleteFromCloudinary(oldAvatarUrl);
+  await deleteFromCloudinary(oldAvatarId);
 
   const avatar = await uploadOnCloudinary(avatarLocalPath);
 
@@ -352,6 +352,32 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, user, "Avatar image updated successfully"));
+});
+
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+  // get username
+  const { username } = req.params;
+
+  if (!username.trim()) {
+    throw new ApiError(400, "username not found");
+  }
+
+  const channel = await User.aggregate([
+    {
+      $match: {
+        username: username?.toLowerCase(),
+      },
+    },
+
+    {
+      $lookup: {
+        from: "subscription",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscibedTo",
+      },
+    },
+  ]);
 });
 
 export {
